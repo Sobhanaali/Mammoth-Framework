@@ -1,0 +1,17 @@
+{
+    "name": "sobhan-aali/mammoth",
+    "description": "A custom MVC framework for PHP development.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sobhan Aali",
+            "email": "95542970+Sobhanaali@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}
