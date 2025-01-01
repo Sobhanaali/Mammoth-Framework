@@ -7,11 +7,13 @@ class Router
 {
     protected array $routers = [];
     public Request $request;
+    public Response $response;
 
 
-    public function __construct(Request $request)
+    public function __construct(Request $request , Response $response)
     {
         $this->request = $request;
+        $this->response = $response;
         
     }
 
@@ -30,6 +32,7 @@ class Router
         $callback = $this->routers[$method][$path] ?? false;
         
         if(!$callback){
+            $this->response->setStatusCode(404);
             return 'Not Found';
         }
 
