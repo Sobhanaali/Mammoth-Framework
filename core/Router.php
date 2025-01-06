@@ -24,20 +24,35 @@ class Router
 
     }
 
+    public function post($path , $callback)
+    {
+        $this->routers['post'][$path] = $callback;
+
+    }
+
     public function resolve()
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
+        // echo $method;
 
         $callback = $this->routers[$method][$path] ?? false;
         
         if(!$callback){
             $this->response->setStatusCode(404);
-            return 'Not Found';
+            return $this->renderView('_404');
         }
 
         if(is_string($callback)){
             return $this->renderView($callback);
+        }
+
+        if(is_array($callback)){
+            if(class_exists($callback[0])){
+                $instance = new $callback[0];
+    
+                $callback[0] = $instance;
+            }
         }
 
         return call_user_func($callback);
@@ -74,7 +89,7 @@ class Router
         $sections = [];
 
         preg_match_all("/@section\('(\w+)'\s*,\s*'([^']+)'\)/", $view, $matches1, PREG_SET_ORDER);
-        preg_match_all("/@section\s*\(\s*'([^']+)'\s*\)\s*(.*?)\s*@endSection/", $view, $matches2, PREG_SET_ORDER);
+        preg_match_all("/@section\s*\(\s*'([^']+)'\s*\)\s*(.*?)\s*@endSection/s", $view, $matches2, PREG_SET_ORDER);
 
         foreach ($matches1 as $match) {
             $sections[$match[1]] = $match[2];
@@ -83,6 +98,9 @@ class Router
             $sections[$match[1]] = $match[2];
         }
         
+        // echo '<pre>';
+        // var_dump($sections);
+        // echo '</pre>';
         return $sections;
 
     }
