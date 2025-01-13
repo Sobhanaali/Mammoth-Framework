@@ -60,8 +60,8 @@ class Router
     public function renderView($view , $params = [])
     {
         $layoutContent = $this->layoutContent();
-        $viewContent = $this->renderOnlyView($view , $params);
-
+        $viewContent = $this->renderOnlyView($view , $params) ;
+        
         $sections = $this->renderSections($viewContent);
         
         foreach($sections as $key => $content){
@@ -73,6 +73,7 @@ class Router
     protected function layoutContent()
     {
         $layout = Application::$app->controller->layout;
+        
         ob_start();
         include_once Application::$ROOT_DIR."/views/layouts/$layout.php";
         return ob_get_clean();
@@ -92,16 +93,19 @@ class Router
 
     protected function renderSections($view){
         $sections = [];
-
         preg_match_all("/@section\('(\w+)'\s*,\s*'([^']+)'\)/", $view, $matches1, PREG_SET_ORDER);
         preg_match_all("/@section\s*\(\s*'([^']+)'\s*\)\s*(.*?)\s*@endSection/s", $view, $matches2, PREG_SET_ORDER);
-
+        
         foreach ($matches1 as $match) {
             $sections[$match[1]] = $match[2];
         }
         foreach ($matches2 as $match) {
             $sections[$match[1]] = $match[2];
         }
+        // echo '<pre>';
+        // var_dump($sections);
+        // echo '</pre>';
+        // exit();
         
         return $sections;
 
